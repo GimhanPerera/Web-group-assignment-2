@@ -8,21 +8,25 @@
     <title>hello</title>
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
-<body class="p-3 m-0 border-0 bd-example m-0 border-0">
+<body class="p-3 m-0 border-0 bd-example m-0 border-0" style="background-color: #914bee;">
 
-<nav class="navbar navbar-expand-lg" style="background-color: #2ecc71;" data-bs-theme="dark">
+<nav class="navbar navbar-expand-lg" style="background-color: #914bee;" data-bs-theme="dark">
+    <br>
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">TAX Calculator</a>
+        <a class="navbar-brand" href="${pageContext.request.contextPath}/index.jsp">
+            <b>TAX</b> Calculator
+            <span style="display: inline-block; margin-left: 10px;"><img src="https://www.countryflags.com/wp-content/uploads/sri-lanka-flag-png-large.png" alt="Flag" style="height: 20px;"></span>
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0" style="display: flex; justify-content: space-between;">
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="index.html">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">History</a>
+                    <a class="nav-link active" aria-current="page" href="history.html">History</a>
                 </li>
             </ul>
         </div>
@@ -33,30 +37,48 @@
     <h1>Salary Calculation</h1>
     <div id="calculationData"></div>
     <div class="text-center">
-        <button id="refreshBtn" class="btn btn-lg btn-primary" style="background-color: #2ecc71;">Refresh</button>
+        <div id="loadingSpinner" class="spinner-border text-primary" style="width: 3rem; height: 3rem; color: #6610bd;" role="status" style="display: none;">
+            <span class="visually-hidden">Loading...</span>
+        </div><br><br>
+        <button id="refreshBtn" class="btn btn-lg btn-primary" style="background-color: #914bee;">Refresh</button>
     </div>
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     $(document).ready(function() {
+
+        function showLoadingSpinner() {
+            $('#loadingSpinner').show();
+        }
+
+        function hideLoadingSpinner() {
+            $('#loadingSpinner').hide();
+        }
+
         // Function to fetch calculation data from the backend
         function fetchCalculationData() {
+
+            showLoadingSpinner();
             $.ajax({
                 url: '/api/v1/getHistory', // Replace with your backend endpoint URL
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {
+                    hideLoadingSpinner();
                     displayCalculationData(data);
                 },
                 error: function(xhr, status, error) {
                     console.error(xhr.responseText);
+                    hideLoadingSpinner();
                 }
             });
         }
 
         // Function to display calculation data on the page
         function displayCalculationData(data) {
+
             var calculationDataHtml = '';
             data.forEach(function(calculationData) {
                 calculationDataHtml += '<div class="row justify-content-center">';
@@ -90,6 +112,9 @@
         // Initial fetch when the page loads
         fetchCalculationData();
     });
+
 </script>
+
 </body>
 </html>
+
