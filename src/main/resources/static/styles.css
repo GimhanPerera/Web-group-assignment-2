@@ -1,0 +1,63 @@
+
+
+/* Default styling for the element */
+
+
+/* Styling for small devices (screens smaller than 576px) */
+@media (max-width: 575.98px) {
+    .custom-border-radius-green {
+        border-bottom-right-radius: 0!important;
+        border-bottom-left-radius: 0!important;
+    }
+    .custom-border-radius-white{
+        border-top-left-radius: 0!important;
+        border-top-right-radius: 0!important;
+    }
+
+}
+
+/* Styling for medium devices (screens between 576px and 767.98px) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .custom-border-radius-green {
+        border-bottom-right-radius: 0!important;
+        border-bottom-left-radius: 0!important;
+    }
+    .custom-border-radius-white{
+        border-top-left-radius: 0!important;
+        border-top-right-radius: 0!important;
+    }
+}
+
+/* Styling for large devices (screens between 768px and 991.98px) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .custom-border-radius-green {
+        border-bottom-right-radius: 0!important;
+        border-bottom-left-radius: 0!important;
+    }
+    .custom-border-radius-white{
+        border-top-left-radius: 0!important;
+        border-top-right-radius: 0!important;
+    }
+}
+
+/* Styling for extra-large devices (screens larger than 992px) */
+@media (min-width: 992px) {
+    .custom-border-radius-green {
+        border-top-right-radius: 0!important;
+        border-bottom-right-radius: 0!important;
+    }
+    .custom-border-radius-white{
+        border-top-left-radius: 0!important;
+        border-bottom-left-radius: 0!important;
+    }
+    .row{
+        --bs-gutter-x: 0rem;
+    }
+}
+.buttonload {
+    background-color: #04AA6D; /* Green background */
+    border: none; /* Remove borders */
+    color: white; /* White text */
+    padding: 12px 16px; /* Some padding */
+    font-size: 16px /* Set a font size */
+  }

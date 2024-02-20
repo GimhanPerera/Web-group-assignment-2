@@ -22,12 +22,6 @@ public class CalController {
     @Autowired
     private GetHistoryService getHistoryService;
 
-    //Before add HTTP headers
-//    @PostMapping("/calculate")
-//    public CalculatedDataDTO postData(@RequestBody CalculationDTO calculationDTO){
-//        return calculationService.getcalculation(calculationDTO);
-//    }
-
     @PostMapping("/calculate")
     public ResponseEntity<CalculatedDataDTO> postData(@RequestBody CalculationDTO calculationDTO) {
         CalculatedDataDTO result = calculationService.getcalculation(calculationDTO);
@@ -37,11 +31,6 @@ public class CalController {
         return ResponseEntity.ok().cacheControl(cacheControl).body(result);
     }
 
-    //Before add HTTP headers
-//    @GetMapping("/getHistory")
-//    public List<HistoryDTO> getHistory(){
-//        return getHistoryService.getHistory();
-//    }
     @GetMapping("/getHistory")
     public ResponseEntity<List<HistoryDTO>> getHistory() {
         List<HistoryDTO> history = getHistoryService.getHistory();
