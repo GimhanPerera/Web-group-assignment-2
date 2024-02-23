@@ -5,9 +5,12 @@ import com.example.webproject4.Dto.HistoryDTO;
 import com.example.webproject4.Service.CalculationService;
 import com.example.webproject4.Service.GetHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
-
+import org.springframework.http.CacheControl;
+import org.springframework.http.ResponseEntity;
+import java.util.concurrent.TimeUnit;
 import java.util.List;
 
 @RestController
@@ -19,18 +22,21 @@ public class CalController {
     @Autowired
     private GetHistoryService getHistoryService;
 
-    @GetMapping("/a")
-    public String index() {
-        return "index"; // This will return index.html from src/main/resources/static
-    }
-
     @PostMapping("/calculate")
-    public CalculatedDataDTO postData(@RequestBody CalculationDTO calculationDTO){
-        return calculationService.getcalculation(calculationDTO);
-    }
-    @GetMapping("/getHistory")
-    public List<HistoryDTO> getHistory(){
-        return getHistoryService.getHistory();
+    public ResponseEntity<CalculatedDataDTO> postData(@RequestBody CalculationDTO calculationDTO) {
+        CalculatedDataDTO result = calculationService.getcalculation(calculationDTO);
+
+        // Set cache headers
+        CacheControl cacheControl = CacheControl.maxAge(1, TimeUnit.HOURS).cachePublic();
+        return ResponseEntity.ok().cacheControl(cacheControl).body(result);
     }
 
+    @GetMapping("/getHistory")
+    public ResponseEntity<List<HistoryDTO>> getHistory() {
+        List<HistoryDTO> history = getHistoryService.getHistory();
+
+        // Set cache headers
+        CacheControl cacheControl = CacheControl.maxAge(1, TimeUnit.HOURS).cachePublic();
+        return ResponseEntity.ok().cacheControl(cacheControl).body(history);
+    }
 }
