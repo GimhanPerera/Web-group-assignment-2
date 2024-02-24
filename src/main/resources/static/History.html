@@ -96,7 +96,7 @@
                 calculationDataHtml += '<p class="card-text">EPF + ETF = Rs. ' + formatToCurrency(calculationData.totalEpfEtf) + '</p>';
                 calculationDataHtml += '<p class="card-text">Net salary = Rs. ' + formatToCurrency(calculationData.netSalary) + '</p>';
                 calculationDataHtml += '</div>';
-                calculationDataHtml += '<p class="card-date text-end" style="color: rgba(70,70,70,0.73); font-size: small">' + convertToCustomFormat(calculationData.recordedDateTime) + '</p>';
+                calculationDataHtml += '<p class="card-date text-end" style="color: rgba(70,70,70,0.73); font-size: small">' + convertToTimeZone(calculationData.recordedDateTime) + '</p>';
                 calculationDataHtml += '</div>';
                 calculationDataHtml += '</div>';
                 calculationDataHtml += '</div>';
@@ -114,18 +114,50 @@
         fetchCalculationData();
     });
     // Function to convert server time to custom format(Sri Lankan time zone)
-    function convertToCustomFormat(dateTimeStr) {
-        const serverTime = new Date(dateTimeStr);
-        const year = serverTime.getFullYear();
-        const month = serverTime.toLocaleString('en-US', { month: 'short' });
-        const day = serverTime.getDate();
-        const hour = serverTime.getHours() % 12 || 12;
-        const minute = serverTime.getMinutes().toString().padStart(2, '0');
-        const ampm = serverTime.getHours() < 12 ? 'a.m.' : 'p.m.';
-        const customFormatStr = `${year} ${month} ${day} |
-         ${hour} : ${minute} ${ampm}`;
-        return customFormatStr;
+    function convertToTimeZone(originalDateTime, targetTimeZone) {
+        // Parse the input date string
+        const originalDate = new Date(originalDateTime);
+
+        // Create an Intl.DateTimeFormat object for the target time zone
+        const formatter = new Intl.DateTimeFormat('en-US', {
+            timeZone: targetTimeZone,
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            timeZoneName: 'short'
+        });
+
+        // Format the date in the target time zone
+        const formattedDate = formatter.format(originalDate);
+
+        return formatDateTime(formattedDate);
     }
+    function formatDateTime(inputDateTime) {
+        // Parse input date and time
+        const dateTimeParts = inputDateTime.split(', ');
+        const inputDate = dateTimeParts[0];
+        const inputTime = dateTimeParts[1];
+        const dateTimeString = inputDate + ' ' + inputTime;
+        const dateTime = new Date(dateTimeString);
+
+        // Format date
+        const optionsDate = { year: 'numeric', month: 'short', day: '2-digit' };
+        const formattedDate = dateTime.toLocaleDateString('en-US', optionsDate);
+
+        // Format time without duplicate "AM" or "PM"
+        const optionsTime = { hour: 'numeric', minute: '2-digit', hour12: true };
+        const formattedTime = dateTime.toLocaleTimeString('en-US', optionsTime).replace(/(:\d{2}| [APMapm]{2})/g, '$1');
+
+        // Construct the final formatted string
+        const result = `${formattedDate} | ${formattedTime}`;
+
+        return result;
+    }
+
+
     function formatToCurrency(value) {
         // Convert the value to a floating-point number with two decimal places
         let formattedValue = parseFloat(value).toFixed(2);
@@ -137,6 +169,7 @@
 
         return formattedValue;
     }
+
 
 </script>
 
