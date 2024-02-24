@@ -104,25 +104,31 @@
     //function to calculate tax
     function calculateTax() {
         var salary = $('#salaryInput').val();
-        var requestData = {
-            "grossSalary": salary
-        };
-        $.ajax({
-            type: 'POST',
-            url: 'api/v1/calculate', //URL
-            contentType: 'application/json',
-            dataType: 'json',
-            data: JSON.stringify(requestData),
-            success: function(response) {
-                $('#GrossSalary').attr('placeholder', response.grossSalary);
-                $('#Tax').attr('placeholder', response.tax);
-                $('#EmployeeEPF').attr('placeholder', response.employeeEpf);
-                $('#EmployerEPF').attr('placeholder', response.employerEpf);
-                $('#EmployerETF').attr('placeholder', response.employerEtf);
-                $('#TotalEPFETF').attr('placeholder', response.totalEpfEtf);
-                $('#NetSalary').attr('placeholder', response.netSalary);
+        if(salary>=0) {
+            var requestData = {
+                "grossSalary": salary
+            };
+            $.ajax({
+                type: 'POST',
+                url: 'api/v1/calculate', //URL
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify(requestData),
+                success: function (response) {
+                    $('#GrossSalary').attr('placeholder', response.grossSalary);
+                    $('#Tax').attr('placeholder', response.tax);
+                    $('#EmployeeEPF').attr('placeholder', response.employeeEpf);
+                    $('#EmployerEPF').attr('placeholder', response.employerEpf);
+                    $('#EmployerETF').attr('placeholder', response.employerEtf);
+                    $('#TotalEPFETF').attr('placeholder', response.totalEpfEtf);
+                    $('#NetSalary').attr('placeholder', response.netSalary);
+                }
+            });
+        } else {
+            if (!$('#errorMessage').length) {
+                $('<p id="errorMessage" style="color: red;">Please enter a valid salary amount</p>').insertAfter('#salaryInput');
             }
-        });
+        }
     }
 </script>
 
