@@ -40,15 +40,15 @@ public class CalculationService {
         } else if (salary <= 141667) {
             tax = (salary - 100000) * 0.06;
         } else if (salary <= 183333) {
-            tax = 2490 + (salary - 141667) * 0.12;
+            tax = 2500.02 + (salary - 141667) * 0.12;
         } else if (salary <= 225000) {
-            tax = 5450 + (salary - 183333) * 0.18;
+            tax = 2500.02 + 4999.92 + (salary - 183333) * 0.18;
         } else if (salary <= 266667) {
-            tax = 9210 + (salary - 225000) * 0.24;
+            tax = 2500.02 + 4999.92 + 7500.06 + (salary - 225000) * 0.24;
         } else if (salary <= 308333) {
-            tax = 14570 + (salary - 266667) * 0.30;
+            tax = 2500.02 + 4999.92 + 7500.06 + 10000.08 + (salary - 266667) * 0.30;
         } else {
-            tax = 21150 + (salary - 308333) * 0.36;
+            tax = 2500.02 + 4999.92 + 7500.06 + 10000.08 + 12499.8 + (salary - 308333) * 0.36;
         }
         double grossSalary = salary;
         double netSalary = (salary*0.92 - tax);
