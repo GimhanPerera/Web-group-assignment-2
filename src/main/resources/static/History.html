@@ -88,13 +88,13 @@
                 calculationDataHtml += '<div class="card-body d-flex justify-content-between align-items-start">';
                 calculationDataHtml += '<div>';
                 calculationDataHtml += '<h5 class="card-title">Calculation</h5>';
-                calculationDataHtml += '<p class="card-text">Gross salary = Rs. ' + calculationData.grossSalary + '</p>';
-                calculationDataHtml += '<p class="card-text">Tax = Rs. ' + calculationData.tax + '</p>';
-                calculationDataHtml += '<p class="card-text">Employee EPF = Rs. ' + calculationData.employeeEpf + '</p>';
-                calculationDataHtml += '<p class="card-text">Employer EPF = Rs. ' + calculationData.employerEpf + '</p>';
-                calculationDataHtml += '<p class="card-text">ETF = Rs. ' + calculationData.employerEtf + '</p>';
-                calculationDataHtml += '<p class="card-text">EPF + ETF = Rs. ' + calculationData.totalEpfEtf + '</p>';
-                calculationDataHtml += '<p class="card-text">Net salary = Rs. ' + calculationData.netSalary + '</p>';
+                calculationDataHtml += '<p class="card-text">Gross salary = Rs. ' + formatToCurrency(calculationData.grossSalary) + '</p>';
+                calculationDataHtml += '<p class="card-text">Tax = Rs. ' + formatToCurrency(calculationData.tax) + '</p>';
+                calculationDataHtml += '<p class="card-text">Employee EPF = Rs. ' + formatToCurrency(calculationData.employeeEpf) + '</p>';
+                calculationDataHtml += '<p class="card-text">Employer EPF = Rs. ' + formatToCurrency(calculationData.employerEpf) + '</p>';
+                calculationDataHtml += '<p class="card-text">ETF = Rs. ' + formatToCurrency(calculationData.employerEtf) + '</p>';
+                calculationDataHtml += '<p class="card-text">EPF + ETF = Rs. ' + formatToCurrency(calculationData.totalEpfEtf) + '</p>';
+                calculationDataHtml += '<p class="card-text">Net salary = Rs. ' + formatToCurrency(calculationData.netSalary) + '</p>';
                 calculationDataHtml += '</div>';
                 calculationDataHtml += '<p class="card-date text-end" style="color: rgba(70,70,70,0.73); font-size: small">' + convertToCustomFormat(calculationData.recordedDateTime) + '</p>';
                 calculationDataHtml += '</div>';
@@ -125,6 +125,17 @@
         const customFormatStr = `${year} ${month} ${day} |
          ${hour} : ${minute} ${ampm}`;
         return customFormatStr;
+    }
+    function formatToCurrency(value) {
+        // Convert the value to a floating-point number with two decimal places
+        let formattedValue = parseFloat(value).toFixed(2);
+
+        // Add a trailing zero if there's only one decimal place
+        if (formattedValue.indexOf('.') === formattedValue.length - 2) {
+            formattedValue += '0';
+        }
+
+        return formattedValue;
     }
 
 </script>

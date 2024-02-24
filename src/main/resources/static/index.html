@@ -114,13 +114,25 @@
             dataType: 'json',
             data: JSON.stringify(requestData),
             success: function(response) {
-                $('#GrossSalary').attr('placeholder', response.grossSalary);
-                $('#Tax').attr('placeholder', response.tax);
-                $('#EmployeeEPF').attr('placeholder', response.employeeEpf);
-                $('#EmployerEPF').attr('placeholder', response.employerEpf);
-                $('#EmployerETF').attr('placeholder', response.employerEtf);
-                $('#TotalEPFETF').attr('placeholder', response.totalEpfEtf);
-                $('#NetSalary').attr('placeholder', response.netSalary);
+                function formatToCurrency(value) {
+                    // Convert the value to a floating-point number with two decimal places
+                    let formattedValue = parseFloat(value).toFixed(2);
+
+                    // Add a trailing zero if there's only one decimal place
+                    if (formattedValue.indexOf('.') === formattedValue.length - 2) {
+                        formattedValue += '0';
+                    }
+
+                    return formattedValue;
+                }
+
+                $('#GrossSalary').attr('placeholder', formatToCurrency(response.grossSalary));
+                $('#Tax').attr('placeholder', formatToCurrency(response.tax));
+                $('#EmployeeEPF').attr('placeholder', formatToCurrency(response.employeeEpf));
+                $('#EmployerEPF').attr('placeholder', formatToCurrency(response.employerEpf));
+                $('#EmployerETF').attr('placeholder', formatToCurrency(response.employerEtf));
+                $('#TotalEPFETF').attr('placeholder', formatToCurrency(response.totalEpfEtf));
+                $('#NetSalary').attr('placeholder', formatToCurrency(response.netSalary));
             }
         });
     }

@@ -20,6 +20,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -50,12 +51,13 @@ public class CalculationService {
         } else {
             tax = 21150 + (salary - 308333) * 0.36;
         }
-        double grossSalary = salary;
-        double netSalary = (salary*0.92 - tax);
-        double employeeEpf = salary*0.08;
-        double employerEpf = salary*0.12;
-        double employerEtf = salary*0.03;
-        double totalEpfEtf = salary*0.23;
+        tax = TwoDecimalpoints(tax);
+        double grossSalary = TwoDecimalpoints(salary);
+        double netSalary = TwoDecimalpoints((salary*0.92 - tax));
+        double employeeEpf = TwoDecimalpoints(salary*0.08);
+        double employerEpf = TwoDecimalpoints(salary*0.12);
+        double employerEtf = TwoDecimalpoints(salary*0.03);
+        double totalEpfEtf = TwoDecimalpoints(salary*0.23);
 
         DbActivities saveDB =new DbActivities();
         saveDB.SaveCalculatedData(grossSalary, tax, employeeEpf, employerEpf, employerEtf, netSalary, totalEpfEtf);
@@ -67,6 +69,13 @@ public class CalculationService {
         calculatedDataDTO.setEmployerEtf(employerEtf);
         calculatedDataDTO.setTotalEpfEtf(totalEpfEtf);
         return calculatedDataDTO;
+    }
+
+    double TwoDecimalpoints(double value){
+        DecimalFormat df = new DecimalFormat("0.00");
+        String formattedEtf = df.format(value);
+        double roundedVal = Double.parseDouble(formattedEtf);
+        return roundedVal;
     }
 
 
