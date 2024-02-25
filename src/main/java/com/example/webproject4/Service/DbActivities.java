@@ -1,42 +1,35 @@
 package com.example.webproject4.Service;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 
 public class DbActivities {
-    public void SaveCalculatedData(Double grossSalary,Double tax,Double employeeEpf,Double employerEpf,Double employerEtf,Double netSalary, Double totalEpfEtf){
+    public void SaveCalculatedData(Double grossSalary, Double tax, Double employeeEpf, Double employerEpf, Double employerEtf, Double netSalary, Double totalEpfEtf) {
         DbConnectionService con = new DbConnectionService();
         Connection connection = con.connect();
-// Create SQL query to insert a record into the History table
-        String insertQuery = "INSERT INTO History (RecordedDateTime, grossSalary, netSalary, employeeEpf, employerEpf, employerEtf, totalEpfEtf , tax) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String storedProcedureCall = "{CALL InsertHistoryRecord(?, ?, ?, ?, ?, ?, ?, ?)}";
 
-        // Prepare the statement with parameters
-        PreparedStatement preparedStatement = null;
-        try {
-            preparedStatement = connection.prepareStatement(insertQuery);
+        try (CallableStatement statement = connection.prepareCall(storedProcedureCall)) {
+            // Set values for parameters
+            statement.setTimestamp(1, new Timestamp(System.currentTimeMillis())); // RecordedDateTime
+            statement.setDouble(2, grossSalary); // GrossSalary
+            statement.setDouble(3, netSalary); // NetSalary
+            statement.setDouble(4, employeeEpf); // EmployeeEPF
+            statement.setDouble(5, employerEpf); // EmployerEPF
+            statement.setDouble(6, employerEtf); // EmployerETF
+            statement.setDouble(7, totalEpfEtf); // TotalEPFETF
+            statement.setDouble(8, tax); // Tax
 
-
-        // Set values for parameters
-        preparedStatement.setTimestamp(1, new Timestamp(System.currentTimeMillis())); // RecordedDateTime
-        preparedStatement.setDouble(2, grossSalary); // grossSalary
-        preparedStatement.setDouble(3, netSalary); // netSalary
-        preparedStatement.setDouble(4, employeeEpf); // employeeEpf
-        preparedStatement.setDouble(5, employerEpf); // employerEpf
-        preparedStatement.setDouble(6, employerEtf); // employerEtf
-        preparedStatement.setDouble(7, totalEpfEtf); // totalEpfEtf
-            preparedStatement.setDouble(8, tax); // tax
-        // Execute the insert statement
-        int rowsAffected = preparedStatement.executeUpdate();
-        if (rowsAffected > 0) {
+            // Execute the stored procedure
+            statement.execute();
             System.out.println("Record inserted successfully!");
-        } else {
-            System.out.println("Failed to insert record!");
-        }
-        connection.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
