@@ -104,18 +104,24 @@
 <script>
     //function to calculate tax
     function calculateTax() {
+        const submitButton = document.getElementById('submitButton');
+        const originalButtonText = submitButton.value;
+
+        // Show loading animation and change text
+        submitButton.value = 'Submitting...';
+        submitButton.disabled = true;
         var salary = $('#salaryInput').val();
-        if(salary>=0) {
+        if(salary>0 && salary <100000000) {
             var requestData = {
                 "grossSalary": salary
             };
             $.ajax({
                 type: 'POST',
-                url: 'api/v1/calculate', //URL
+                url: 'api/v1/calculate',
                 contentType: 'application/json',
                 dataType: 'json',
                 data: JSON.stringify(requestData),
-                success: function (response) {
+                success: function(response) {
                     $('#GrossSalary').attr('placeholder', response.grossSalary);
                     $('#Tax').attr('placeholder', response.tax);
                     $('#EmployeeEPF').attr('placeholder', response.employeeEpf);
@@ -123,45 +129,46 @@
                     $('#EmployerETF').attr('placeholder', response.employerEtf);
                     $('#TotalEPFETF').attr('placeholder', response.totalEpfEtf);
                     $('#NetSalary').attr('placeholder', response.netSalary);
-
+                    const submitButton = document.getElementById('submitButton');
+                    submitButton.value = "Submit";
+                    submitButton.disabled = false;
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    const errorMessage = "An error occurred while processing your request. Please try again.";
+                    alert(errorMessage);
+                    console.error("AJAX Error: " + textStatus, errorThrown);
+                    const submitButton = document.getElementById('submitButton');
+                    submitButton.value = "Submit";
+                    submitButton.disabled = false;
                 }
             });
         }
-        else {
+        else if(salary<=0) {
             const small = document.querySelector("small");
-                  small.classList.add("error");
-                  small.innerText = "Invalid input";
-                  small.style.color ="red";
-                  small.style.margin="0";
-                  small.style.padding="0";
-
+            small.classList.add("error");
+            small.innerText = "Invalid input";
+            small.style.color ="red";
+            small.style.margin="0";
+            small.style.padding="0";
+            submitButton.value = "Submit";
+            submitButton.disabled = false;
+        }
+        else{
+            const small = document.querySelector("small");
+            small.classList.add("error");
+            small.innerText = "Salary should be less than 100000000";
+            small.style.color ="red";
+            small.style.margin="0";
+            small.style.padding="0";
+            submitButton.value = "Submit";
+            submitButton.disabled = false;
         }
     }
 </script>
-
-
-
-
 <script>
     //function to change the submit button text and show loading animation
     function submitForm() {
-        const submitButton = document.getElementById('submitButton');
-        const originalButtonText = submitButton.value;
-
-        // Show loading animation and change text
-        submitButton.value = 'Submitting...';
-        submitButton.disabled = true;
         calculateTax();
-
-        // Simulate loading for 1.5 second
-        setTimeout(() => {
-            // Restore the original state
-            submitButton.value = originalButtonText;
-            submitButton.disabled = false;
-        }, 1500);
-
-
-
     }
 
 </script>
