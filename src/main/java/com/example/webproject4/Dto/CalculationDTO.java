@@ -6,6 +6,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class CalculationDTO {
+public class CalculationDTO { //use to send gross salary from Controller to service
     private Double grossSalary;
 }

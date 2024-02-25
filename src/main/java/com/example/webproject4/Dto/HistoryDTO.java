@@ -21,7 +21,7 @@ public class HistoryDTO {
 
 
     public HistoryDTO(java.sql.Timestamp recordedDateTime, double grossSalary, double netSalary, double employeeEpf,
-                         double employerEpf, double employerEtf, double totalEpfEtf, double tax) {
+                         double employerEpf, double employerEtf, double totalEpfEtf, double tax) { //use to send history from Service to Controller
         this.recordedDateTime = recordedDateTime;
         this.grossSalary = grossSalary;
         this.netSalary = netSalary;

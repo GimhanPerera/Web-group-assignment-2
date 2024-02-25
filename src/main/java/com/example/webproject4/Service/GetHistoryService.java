@@ -14,16 +14,16 @@ import java.util.List;
 @Transactional
 public class GetHistoryService {
 
+    //Get the history data
     public List<HistoryDTO> getHistory(){
         DbConnectionService con = new DbConnectionService();
         Connection connection = con.connect();
         List<HistoryDTO> historyRecords = new ArrayList<>();
-// Create SQL query to insert a record into the History table
+
         // Prepare SELECT statement
         try {
-        String selectQuery = "SELECT * FROM History";
+        String selectQuery = "SELECT * FROM History"; //selection query
         PreparedStatement preparedStatement = connection.prepareStatement(selectQuery);
-
 
         // Execute the SELECT statement
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -51,6 +51,5 @@ public class GetHistoryService {
             throw new RuntimeException(e);
         }
         return historyRecords;
-        //return "Hi";
     }
 }

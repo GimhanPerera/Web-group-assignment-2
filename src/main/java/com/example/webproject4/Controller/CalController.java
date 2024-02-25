@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import java.util.concurrent.TimeUnit;
 import java.util.List;
 
+import static com.microsoft.sqlserver.jdbc.StringUtils.isNumeric;
+
 @RestController
 @RequestMapping(value = "api/v1/")
 @CrossOrigin
@@ -23,24 +25,26 @@ public class CalController {
     @Autowired
     private GetHistoryService getHistoryService;
 
-@PostMapping("/calculate")
-public ResponseEntity<?> postData(@RequestBody CalculationDTO calculationDTO){
-    // Perform server-side validation for the salary input
-    if (calculationDTO.getGrossSalary() <= 0 || calculationDTO.getGrossSalary() >= 100000000) {
-        // Invalid input, return a response with an error message
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid salary input. Salary should be greater than 0 and less than 100000000");
+    //get gross salary and return the calculated response
+    @PostMapping("/calculate")
+    public ResponseEntity<?> postData(@RequestBody CalculationDTO calculationDTO){
+        // Server-side validation for the salary input
+        if (calculationDTO.getGrossSalary() <= 0 || calculationDTO.getGrossSalary() >= 100000000) {
+            // Invalid input, return a response with an error message
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid salary input. Salary should be greater than 0 and less than 100000000");
+        }
+        CalculatedDataDTO result = calculationService.getcalculation(calculationDTO);
+
+        // Set cache headers
+        CacheControl cacheControl = CacheControl.maxAge(1, TimeUnit.HOURS).cachePublic();
+        return ResponseEntity.ok().cacheControl(cacheControl).body(result);//return the response
     }
-    CalculatedDataDTO result = calculationService.getcalculation(calculationDTO);
 
-    // Set cache headers
-    CacheControl cacheControl = CacheControl.maxAge(1, TimeUnit.HOURS).cachePublic();
 
-    return ResponseEntity.ok().cacheControl(cacheControl).body(result);
-}
-
+    //Return the history
     @GetMapping("/getHistory")
     public ResponseEntity<List<HistoryDTO>> getHistory() {
-        List<HistoryDTO> history = getHistoryService.getHistory();
+        List<HistoryDTO> history = getHistoryService.getHistory();//list of HistoryDTO objects
 
         return ResponseEntity.ok().body(history);
     }

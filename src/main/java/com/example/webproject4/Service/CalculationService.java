@@ -27,15 +27,14 @@ import java.util.Date;
 @Service
 @Transactional
 public class CalculationService {
+
+    //Get the calculated value
     public CalculatedDataDTO getcalculation(CalculationDTO calculationDTO){
-        DbConnectionService d = new DbConnectionService();
-        d.connect();
         Double salary = calculationDTO.getGrossSalary();
-        return calculate(salary);
-    }
-    private CalculatedDataDTO calculate(Double salary){
         CalculatedDataDTO calculatedDataDTO = new CalculatedDataDTO();
         double tax = 0;
+
+        //Tax logic
         if (salary <= 100000) {
             tax =  0;
         } else if (salary <= 141667) {
@@ -52,6 +51,7 @@ public class CalculationService {
             tax = 2500.02 + 4999.92 + 7500.06 + 10000.08 + 12499.8 + (salary - 308333) * 0.36;
         }
         tax = TwoDecimalpoints(tax);
+        //convert the calculated values for 2 decimal point values
         double grossSalary = TwoDecimalpoints(salary);
         double netSalary = TwoDecimalpoints((salary*0.92 - tax));
         double employeeEpf = TwoDecimalpoints(salary*0.08);
@@ -59,8 +59,11 @@ public class CalculationService {
         double employerEtf = TwoDecimalpoints(salary*0.03);
         double totalEpfEtf = TwoDecimalpoints(salary*0.23);
 
+        //Save to the database
         DbActivities saveDB =new DbActivities();
         saveDB.SaveCalculatedData(grossSalary, tax, employeeEpf, employerEpf, employerEtf, netSalary, totalEpfEtf);
+
+        //Prepare the response
         calculatedDataDTO.setTax(tax);
         calculatedDataDTO.setGrossSalary(grossSalary);
         calculatedDataDTO.setNetSalary(netSalary);
@@ -68,15 +71,14 @@ public class CalculationService {
         calculatedDataDTO.setEmployerEpf(employerEpf);
         calculatedDataDTO.setEmployerEtf(employerEtf);
         calculatedDataDTO.setTotalEpfEtf(totalEpfEtf);
-        return calculatedDataDTO;
+        return calculatedDataDTO; //Prepare the response
     }
 
+    //convert the calculated values for 2 decimal point values
     double TwoDecimalpoints(double value){
         DecimalFormat df = new DecimalFormat("0.00");
         String formattedEtf = df.format(value);
         double roundedVal = Double.parseDouble(formattedEtf);
         return roundedVal;
     }
-
-
 }

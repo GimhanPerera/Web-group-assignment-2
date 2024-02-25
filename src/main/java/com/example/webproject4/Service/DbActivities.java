@@ -5,8 +5,8 @@ import java.sql.*;
 public class DbActivities {
     public void SaveCalculatedData(Double grossSalary, Double tax, Double employeeEpf, Double employerEpf, Double employerEtf, Double netSalary, Double totalEpfEtf) {
         DbConnectionService con = new DbConnectionService();
-        Connection connection = con.connect();
-        String storedProcedureCall = "{CALL InsertHistoryRecord(?, ?, ?, ?, ?, ?, ?, ?)}";
+        Connection connection = con.connect(); //Get the connection
+        String storedProcedureCall = "{CALL InsertHistoryRecord(?, ?, ?, ?, ?, ?, ?, ?)}"; //Stored Procedure
 
         try (CallableStatement statement = connection.prepareCall(storedProcedureCall)) {
             // Set values for parameters

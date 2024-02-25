@@ -1,0 +1,8 @@
+user-agent: *
+Disallow: /cgi-bin/
+Disallow: /images/
+Disallow: /src/main/java
+Allow:src/main/resources/static/index.html
+Disallow:src/main/resources/static/History.html
+Disallow:src/main/test
+Disallow:target
