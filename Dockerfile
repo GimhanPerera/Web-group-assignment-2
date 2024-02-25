@@ -8,8 +8,7 @@ WORKDIR /app
 COPY target/WebProject4-0.0.1.jar app.jar
 
 # Copy the history.html file into the container
-COPY src/main/resources/static/history.html history.html
-COPY src/main/resources/static/styles.css styles.css
+COPY src/main/resources/static/. .
 
 # Expose the port the app runs on
 EXPOSE 8080
