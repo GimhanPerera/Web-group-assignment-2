@@ -31,7 +31,8 @@ public class CalController {
         // Server-side validation for the salary input
         if (calculationDTO.getGrossSalary() <= 0 || calculationDTO.getGrossSalary() >= 100000000) {
             // Invalid input, return a response with an error message
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid salary input. Salary should be greater than 0 and less than 100000000");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid salary input." +
+                    " Salary should be greater than 0 and less than 100000000");
         }
         CalculatedDataDTO result = calculationService.getcalculation(calculationDTO);
 
