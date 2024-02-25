@@ -27,7 +27,6 @@ public class DbActivities {
         preparedStatement.setDouble(6, employerEtf); // employerEtf
         preparedStatement.setDouble(7, totalEpfEtf); // totalEpfEtf
             preparedStatement.setDouble(8, tax); // tax
-
         // Execute the insert statement
         int rowsAffected = preparedStatement.executeUpdate();
         if (rowsAffected > 0) {
