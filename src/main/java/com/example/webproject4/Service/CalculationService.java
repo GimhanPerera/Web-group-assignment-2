@@ -20,6 +20,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -40,22 +41,23 @@ public class CalculationService {
         } else if (salary <= 141667) {
             tax = (salary - 100000) * 0.06;
         } else if (salary <= 183333) {
-            tax = 2490 + (salary - 141667) * 0.12;
+            tax = 2500.02 + (salary - 141667) * 0.12;
         } else if (salary <= 225000) {
-            tax = 5450 + (salary - 183333) * 0.18;
+            tax = 2500.02 + 4999.92 + (salary - 183333) * 0.18;
         } else if (salary <= 266667) {
-            tax = 9210 + (salary - 225000) * 0.24;
+            tax = 2500.02 + 4999.92 + 7500.06 + (salary - 225000) * 0.24;
         } else if (salary <= 308333) {
-            tax = 14570 + (salary - 266667) * 0.30;
+            tax = 2500.02 + 4999.92 + 7500.06 + 10000.08 + (salary - 266667) * 0.30;
         } else {
-            tax = 21150 + (salary - 308333) * 0.36;
+            tax = 2500.02 + 4999.92 + 7500.06 + 10000.08 + 12499.8 + (salary - 308333) * 0.36;
         }
-        double grossSalary = salary;
-        double netSalary = (salary*0.92 - tax);
-        double employeeEpf = salary*0.08;
-        double employerEpf = salary*0.12;
-        double employerEtf = salary*0.03;
-        double totalEpfEtf = salary*0.23;
+        tax = TwoDecimalpoints(tax);
+        double grossSalary = TwoDecimalpoints(salary);
+        double netSalary = TwoDecimalpoints((salary*0.92 - tax));
+        double employeeEpf = TwoDecimalpoints(salary*0.08);
+        double employerEpf = TwoDecimalpoints(salary*0.12);
+        double employerEtf = TwoDecimalpoints(salary*0.03);
+        double totalEpfEtf = TwoDecimalpoints(salary*0.23);
 
         DbActivities saveDB =new DbActivities();
         saveDB.SaveCalculatedData(grossSalary, tax, employeeEpf, employerEpf, employerEtf, netSalary, totalEpfEtf);
@@ -67,6 +69,13 @@ public class CalculationService {
         calculatedDataDTO.setEmployerEtf(employerEtf);
         calculatedDataDTO.setTotalEpfEtf(totalEpfEtf);
         return calculatedDataDTO;
+    }
+
+    double TwoDecimalpoints(double value){
+        DecimalFormat df = new DecimalFormat("0.00");
+        String formattedEtf = df.format(value);
+        double roundedVal = Double.parseDouble(formattedEtf);
+        return roundedVal;
     }
 
 

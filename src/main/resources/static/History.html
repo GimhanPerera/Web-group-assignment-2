@@ -6,14 +6,16 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
     <title>History</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="icon" type="image/x-icon" href="Calculator-icon.ico">
+    <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
+
 <body class="p-3 m-0 border-0 bd-example m-0 border-0" style="background-color: #914bee;">
 <!--Top bar with navigation-->
 <nav class="navbar navbar-expand-lg" style="background-color: #914bee;" data-bs-theme="dark">
     <br>
     <div class="container-fluid">
-        <a class="navbar-brand" href="${pageContext.request.contextPath}/index.jsp">
+        <a class="navbar-brand" href="index.html">
             <b>TAX</b> Calculator
             <span style="display: inline-block; margin-left: 10px;"><img src="https://www.countryflags.com/wp-content/uploads/sri-lanka-flag-png-large.png" alt="Flag" style="height: 20px;"></span>
         </a>
@@ -33,6 +35,7 @@
     </div>
 </nav>
 
+<!--Loading animation-->
 <div class="bg-body-tertiary p-5 rounded">
     <h1>Salary Calculation</h1>
     <div id="calculationData"></div>
@@ -49,7 +52,6 @@
 <script>
 
     $(document).ready(function() {
-
         function showLoadingSpinner() {
             $('#loadingSpinner').show();
         }
@@ -79,8 +81,8 @@
 
         // Function to display calculation data on the page
         function displayCalculationData(data) {
-
             var calculationDataHtml = '';
+
             data.forEach(function(calculationData) {
                 calculationDataHtml += '<div class="row justify-content-center">';
                 calculationDataHtml += '<div class="col-md-6">';
@@ -88,20 +90,21 @@
                 calculationDataHtml += '<div class="card-body d-flex justify-content-between align-items-start">';
                 calculationDataHtml += '<div>';
                 calculationDataHtml += '<h5 class="card-title">Calculation</h5>';
-                calculationDataHtml += '<p class="card-text">Gross salary = Rs. ' + calculationData.grossSalary + '</p>';
-                calculationDataHtml += '<p class="card-text">Tax = Rs. ' + calculationData.tax + '</p>';
-                calculationDataHtml += '<p class="card-text">Employee EPF = Rs. ' + calculationData.employeeEpf + '</p>';
-                calculationDataHtml += '<p class="card-text">Employer EPF = Rs. ' + calculationData.employerEpf + '</p>';
-                calculationDataHtml += '<p class="card-text">ETF = Rs. ' + calculationData.employerEtf + '</p>';
-                calculationDataHtml += '<p class="card-text">EPF + ETF = Rs. ' + calculationData.totalEpfEtf + '</p>';
-                calculationDataHtml += '<p class="card-text">Net salary = Rs. ' + calculationData.netSalary + '</p>';
+                calculationDataHtml += '<p class="card-text">Gross salary = Rs. ' + formatToCurrency(calculationData.grossSalary) + '</p>';
+                calculationDataHtml += '<p class="card-text">Tax = Rs. ' + formatToCurrency(calculationData.tax) + '</p>';
+                calculationDataHtml += '<p class="card-text">Employee EPF = Rs. ' + formatToCurrency(calculationData.employeeEpf) + '</p>';
+                calculationDataHtml += '<p class="card-text">Employer EPF = Rs. ' + formatToCurrency(calculationData.employerEpf) + '</p>';
+                calculationDataHtml += '<p class="card-text">ETF = Rs. ' + formatToCurrency(calculationData.employerEtf) + '</p>';
+                calculationDataHtml += '<p class="card-text">EPF + ETF = Rs. ' + formatToCurrency(calculationData.totalEpfEtf) + '</p>';
+                calculationDataHtml += '<p class="card-text">Net salary = Rs. ' + formatToCurrency(calculationData.netSalary) + '</p>';
                 calculationDataHtml += '</div>';
-                calculationDataHtml += '<p class="card-date text-end" style="color: rgba(70,70,70,0.73); font-size: small">' + convertToCustomFormat(calculationData.recordedDateTime) + '</p>';
+                calculationDataHtml += '<p class="card-date text-end" style="color: rgba(70,70,70,0.73); font-size: small">' + convertToTimeZone(calculationData.recordedDateTime) + '</p>';
                 calculationDataHtml += '</div>';
                 calculationDataHtml += '</div>';
                 calculationDataHtml += '</div>';
                 calculationDataHtml += '</div>';
             });
+
             $('#calculationData').html(calculationDataHtml);
         }
 
@@ -114,18 +117,61 @@
         fetchCalculationData();
     });
     // Function to convert server time to custom format(Sri Lankan time zone)
-    function convertToCustomFormat(dateTimeStr) {
-        const serverTime = new Date(dateTimeStr);
-        const year = serverTime.getFullYear();
-        const month = serverTime.toLocaleString('en-US', { month: 'short' });
-        const day = serverTime.getDate();
-        const hour = serverTime.getHours() % 12 || 12;
-        const minute = serverTime.getMinutes().toString().padStart(2, '0');
-        const ampm = serverTime.getHours() < 12 ? 'a.m.' : 'p.m.';
-        const customFormatStr = `${year} ${month} ${day} |
-         ${hour} : ${minute} ${ampm}`;
-        return customFormatStr;
+    function convertToTimeZone(originalDateTime, targetTimeZone) {
+        // Parse the input date string
+        const originalDate = new Date(originalDateTime);
+
+        // Create an Intl.DateTimeFormat object for the target time zone
+        const formatter = new Intl.DateTimeFormat('en-US', {
+            timeZone: targetTimeZone,
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            timeZoneName: 'short'
+        });
+
+        // Format the date in the target time zone
+        const formattedDate = formatter.format(originalDate);
+
+        return formatDateTime(formattedDate);
     }
+
+    function formatDateTime(inputDateTime) {
+        // Parse input date and time
+        const dateTimeParts = inputDateTime.split(', ');
+        const inputDate = dateTimeParts[0];
+        const inputTime = dateTimeParts[1];
+        const dateTimeString = inputDate + ' ' + inputTime;
+        const dateTime = new Date(dateTimeString);
+
+        // Format date
+        const optionsDate = { year: 'numeric', month: 'short', day: '2-digit' };
+        const formattedDate = dateTime.toLocaleDateString('en-US', optionsDate);
+
+        // Format time without duplicate "AM" or "PM"
+        const optionsTime = { hour: 'numeric', minute: '2-digit', hour12: true };
+        const formattedTime = dateTime.toLocaleTimeString('en-US', optionsTime).replace(/(:\d{2}| [APMapm]{2})/g, '$1');
+
+        // Construct the final formatted string
+        const result = `${formattedDate} | ${formattedTime}`;
+
+        return result;
+    }
+
+    function formatToCurrency(value) {
+        // Convert the value to a floating-point number with two decimal places
+        let formattedValue = parseFloat(value).toFixed(2);
+
+        // Add a trailing zero if there's only one decimal place
+        if (formattedValue.indexOf('.') === formattedValue.length - 2) {
+            formattedValue += '0';
+        }
+        return formattedValue;
+    }
+
 
 </script>
 

@@ -5,6 +5,7 @@ import com.example.webproject4.Dto.HistoryDTO;
 import com.example.webproject4.Service.CalculationService;
 import com.example.webproject4.Service.GetHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,21 +23,39 @@ public class CalController {
     @Autowired
     private GetHistoryService getHistoryService;
 
-    @PostMapping("/calculate")
-    public ResponseEntity<CalculatedDataDTO> postData(@RequestBody CalculationDTO calculationDTO) {
-        CalculatedDataDTO result = calculationService.getcalculation(calculationDTO);
-
-        // Set cache headers
-        CacheControl cacheControl = CacheControl.maxAge(1, TimeUnit.HOURS).cachePublic();
-        return ResponseEntity.ok().cacheControl(cacheControl).body(result);
+//    @PostMapping("/calculate")
+//    public ResponseEntity<CalculatedDataDTO> postData(@RequestBody CalculationDTO calculationDTO) {
+//        CalculatedDataDTO result = calculationService.getcalculation(calculationDTO);
+//
+//        // Set cache headers
+//        CacheControl cacheControl = CacheControl.maxAge(1, TimeUnit.HOURS).cachePublic();
+//        return ResponseEntity.ok().cacheControl(cacheControl).body(result);
+//    }
+@PostMapping("/calculate")
+public ResponseEntity<?> postData(@RequestBody CalculationDTO calculationDTO){
+    // Perform server-side validation for the salary input
+    if (calculationDTO.getGrossSalary() <= 0 || calculationDTO.getGrossSalary() >= 100000000) {
+        // Invalid input, return a response with an error message
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid salary input. Salary should be greater than 0 and less than 100000000");
     }
 
-    @GetMapping("/getHistory")
-    public ResponseEntity<List<HistoryDTO>> getHistory() {
-        List<HistoryDTO> history = getHistoryService.getHistory();
+    // Input is valid, proceed with calculation
+    CalculatedDataDTO result = calculationService.getcalculation(calculationDTO);
+    return ResponseEntity.ok(result);
+    //return calculationService.getcalculation(calculationDTO);
+}
 
-        // Set cache headers
-        CacheControl cacheControl = CacheControl.maxAge(1, TimeUnit.HOURS).cachePublic();
-        return ResponseEntity.ok().cacheControl(cacheControl).body(history);
+//    @GetMapping("/getHistory")
+//    public ResponseEntity<List<HistoryDTO>> getHistory() {
+//        List<HistoryDTO> history = getHistoryService.getHistory();
+//
+//        // Set cache headers
+//        CacheControl cacheControl = CacheControl.maxAge(1, TimeUnit.HOURS).cachePublic();
+//        return ResponseEntity.ok().cacheControl(cacheControl).body(history);
+//    }
+
+    @GetMapping("/getHistory")
+    public List<HistoryDTO> getHistory(){
+        return getHistoryService.getHistory();
     }
 }
