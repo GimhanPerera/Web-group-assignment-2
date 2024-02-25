@@ -23,14 +23,6 @@ public class CalController {
     @Autowired
     private GetHistoryService getHistoryService;
 
-//    @PostMapping("/calculate")
-//    public ResponseEntity<CalculatedDataDTO> postData(@RequestBody CalculationDTO calculationDTO) {
-//        CalculatedDataDTO result = calculationService.getcalculation(calculationDTO);
-//
-//        // Set cache headers
-//        CacheControl cacheControl = CacheControl.maxAge(1, TimeUnit.HOURS).cachePublic();
-//        return ResponseEntity.ok().cacheControl(cacheControl).body(result);
-//    }
 @PostMapping("/calculate")
 public ResponseEntity<?> postData(@RequestBody CalculationDTO calculationDTO){
     // Perform server-side validation for the salary input
@@ -38,24 +30,19 @@ public ResponseEntity<?> postData(@RequestBody CalculationDTO calculationDTO){
         // Invalid input, return a response with an error message
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid salary input. Salary should be greater than 0 and less than 100000000");
     }
-
-    // Input is valid, proceed with calculation
     CalculatedDataDTO result = calculationService.getcalculation(calculationDTO);
-    return ResponseEntity.ok(result);
-    //return calculationService.getcalculation(calculationDTO);
+
+    // Set cache headers
+    CacheControl cacheControl = CacheControl.maxAge(1, TimeUnit.HOURS).cachePublic();
+
+    return ResponseEntity.ok().cacheControl(cacheControl).body(result);
 }
 
-//    @GetMapping("/getHistory")
-//    public ResponseEntity<List<HistoryDTO>> getHistory() {
-//        List<HistoryDTO> history = getHistoryService.getHistory();
-//
-//        // Set cache headers
-//        CacheControl cacheControl = CacheControl.maxAge(1, TimeUnit.HOURS).cachePublic();
-//        return ResponseEntity.ok().cacheControl(cacheControl).body(history);
-//    }
-
     @GetMapping("/getHistory")
-    public List<HistoryDTO> getHistory(){
-        return getHistoryService.getHistory();
+    public ResponseEntity<List<HistoryDTO>> getHistory() {
+        List<HistoryDTO> history = getHistoryService.getHistory();
+
+        return ResponseEntity.ok().body(history);
     }
+
 }
