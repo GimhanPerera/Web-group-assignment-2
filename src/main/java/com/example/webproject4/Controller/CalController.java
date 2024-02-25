@@ -35,8 +35,6 @@ public class CalController {
     public ResponseEntity<List<HistoryDTO>> getHistory() {
         List<HistoryDTO> history = getHistoryService.getHistory();
 
-        // Set cache headers
-        CacheControl cacheControl = CacheControl.maxAge(1, TimeUnit.HOURS).cachePublic();
-        return ResponseEntity.ok().cacheControl(cacheControl).body(history);
+        return ResponseEntity.ok().body(history);
     }
 }
