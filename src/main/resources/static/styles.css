@@ -1,6 +1,14 @@
 
 
-/* Default styling for the element */
+.navbar-brand h1, .navbar-brand  h1 + span {
+    display: inline-block;
+    margin-left: 10px;
+}
+.navbar-brand h1{
+    margin-bottom: 0;
+    font-size: 20px;
+}
+
 
 
 /* Styling for small devices (screens smaller than 576px) */
